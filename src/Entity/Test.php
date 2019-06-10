@@ -3,7 +3,7 @@ namespace Entity;
 
 /**
  * @DEM_table=test
- * @DEM_repo=none
+ * @DEM_repo=RepoTest
  */
 class Test
 {

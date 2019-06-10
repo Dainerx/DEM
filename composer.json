@@ -1,0 +1,17 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/DEM/Dem.php",
+            "src/DEM/Entry.php",
+            "src/DEM/IO.php",
+            "src/DEM/DemGenerator.php",
+            "src/DEM/AttributeEntry.php"
+        ]
+    },
+    "require": {
+        "nette/php-generator": "^3.0"
+    }
+}
