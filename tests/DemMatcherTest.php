@@ -2,7 +2,9 @@
 
 use DEM\Dem;
 
-class DemMatcherTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class DemMatcherTest extends TestCase
 {
     public function testMatchProviderSimple()
     {

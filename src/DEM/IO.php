@@ -24,7 +24,7 @@ class IO
     const RED = "0;31";
     const WHITE = "0;37";
 
-    public static function println($message= "", $type = self::INFO)
+    public static function println($message = "", $type = self::INFO)
     {
         $color = null;
         if ($type == self::SUCCESS)
@@ -38,12 +38,32 @@ class IO
         echo $output . self::OUTPUT_NEWLINE;
     }
 
+    public static function isFile($file)
+    {
+        return file_exists($file);
+    }
 
-    public static function write($text, $file, $successMessage, $failedMessage)
+    public static function readFile($file)
+    {
+        return (self::isFile($file)) ? file_get_contents($file) : "";
+    }
+
+    public static function writeFile($file, $content, $successMessage = "sucess", $failedMessage = "failed")
     {
         try {
             $handle = fopen($file, "w");
-            fwrite($handle, $text);
+            fwrite($handle, $content);
+            self::println($successMessage, self::SUCCESS);
+        } catch (Exception $e) {
+            self::println($failedMessage, self::ERROR);
+            self::println($e->getMessage(), self::ERROR);
+        }
+    }
+
+    public static function removeFile($file, $successMessage = "sucess", $failedMessage = "failed")
+    {
+        try {
+            unlink($file);
             self::println($successMessage, self::SUCCESS);
         } catch (Exception $e) {
             self::println($failedMessage, self::ERROR);

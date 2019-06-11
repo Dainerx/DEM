@@ -42,10 +42,10 @@ class Dem
 
     public function readDataBaseConfig()
     {
-        if (file_exists(DBCONFIG_FILE) == true) {
+        if (IO::isFile(self::DBCONFIG_FILE) == true) {
             IO::println("Found an exisiting database configuration.");
             IO::println("Listing your current configuration...");
-            $this->db = json_decode(file_get_contents(DBCONFIG_FILE), true);
+            $this->db = json_decode(IO::readFile(self::DBCONFIG_FILE), true);
             IO::println("database host: " . $this->db['host']);
             IO::println("database port: " . $this->db['port']);
             IO::println("database name: " . $this->db['name']);
@@ -53,7 +53,7 @@ class Dem
             IO::println("database password: " . $this->db['password']);
             $redoConfig = readLine("Would you like to change this current configuration\n? (Y/n): ");
             if ($redoConfig == "Y" || $redoConfig == "y") {
-                unlink(DBCONFIG_FILE);
+                IO::removeFile(self::DBCONFIG_FILE);
                 $this->readDataBaseConfig();
             }
         } else {
@@ -86,7 +86,7 @@ class Dem
     {
         IO::println(IO::OUTPUT_RUNNING, IO::INFO);
         $this->db = $this->readDataBaseConfig();
-        IO::write(json_encode($this->db), self::DBCONFIG_FILE, "", "");
+        IO::writeFile(self::DBCONFIG_FILE, json_encode($this->db), "", "");
         $conf = [];
         IO::println(IO::OUTPUT_PROJECT_CONFIG_START, IO::INFO);
         $classesCount = count(glob($this->entityPath . '*.php'));
@@ -123,7 +123,7 @@ class Dem
                 IO::println(IO::OUTPUT_OK, IO::SUCCESS);
                 array_push($conf, $entry);
                 IO::println();
-                IO::write(json_encode($conf), self::METADATA_FILE, IO::OUTPUT_PROJECT_CONFIG_END, IO::OUTPUT_PROJECT_CONFIG_FAILED);
+                IO::writeFile(self::METADATA_FILE, json_encode($conf), IO::OUTPUT_PROJECT_CONFIG_END, IO::OUTPUT_PROJECT_CONFIG_FAILED);
             } catch (Exception $e) {
                 IO::println(IO::OUTPUT_PROJECT_CONFIG_FAILED, IO::ERROR);
                 IO::println(IO::OUTPUT_CLASS_CONFIG_FAILED . $entry->class, IO::ERROR);

@@ -1,11 +1,22 @@
 <?php
+use PHPUnit\Framework\TestCase;
 use DEM\DemGenerator;
 
-class DemGeneratorTest extends PHPUnit_Framework_TestCase
+class DemGeneratorTest extends TestCase
 {
-    public function testGeneratorSimple()
+    public function testGeneratorEntityManager()
     {
         $g = new DemGenerator();
-        $g->generateEntityManager();
+        echo $g->generateFile("EM", array("Repo"), $g->generateEntityManager());
+    }
+    public function testGeneratorDatabaseManager()
+    {
+        $g = new DemGenerator();
+        echo $g->generateFile("Database", [], $g->generateDataBaseManager());
+    }
+    public function testGeneratorRepo()
+    {
+        $g = new DemGenerator();
+        echo $g->generateFile("Repo", array("Database\DataBaseManager"), $g->generateRepo());
     }
 }
