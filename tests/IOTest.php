@@ -12,16 +12,9 @@ class IOTest extends TestCase
      */
     private $root;
 
-    /**
-     * set up test environmemt
-     */
-    public function setUp()
-    {
-        $this->root = vfsStream::setup(self::TEST_GENERATED_FILES);
-    }
-
     public function testFileIsCreated()
     {
+        $this->root = vfsStream::setup(self::TEST_GENERATED_FILES);
         $filename = 'hello.txt';
         $content = 'Hello world';
         $this->assertFalse($this->root->hasChild($filename));
@@ -31,6 +24,7 @@ class IOTest extends TestCase
 
     public function testFileIsDeleted()
     {
+        $this->root = vfsStream::setup(self::TEST_GENERATED_FILES);
         $filename = 'hello.txt';
         $content = 'Hello world';
         IO::writeFile(vfsStream::url(self::TEST_GENERATED_FILES . '/' . $filename), $content);
@@ -41,6 +35,7 @@ class IOTest extends TestCase
 
     public function testReadingContent()
     {
+        $this->root = vfsStream::setup(self::TEST_GENERATED_FILES);
         $filename = 'test.txt';
         $contentToTestAgainst = 'some content to test against';
         IO::writeFile(vfsStream::url(self::TEST_GENERATED_FILES . '/' . $filename), $contentToTestAgainst);

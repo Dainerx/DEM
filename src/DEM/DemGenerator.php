@@ -42,7 +42,6 @@ class DemGenerator
     public function generateEntityManager()
     {
         $class = new ClassType('EntityManager');
-
         $class->addProperty('db_conf')->setVisibility('private');
         $class->addProperty('metadata')->setVisibility('private');
         $class->addProperty('repo')->setVisibility('private');
@@ -55,14 +54,14 @@ class DemGenerator
             [],
             array("className" => self::NON_DEFAULT_VALUE),
             '$this->db_conf = json_decode(file_get_contents("db.json"));
-            $this->metadata = json_decode(file_get_contents("metadata.json"));
-            $filter = array_filter($this->metadata, function ($obj) use ($className) {
-                return $obj->class == $className;
-            });
-            $data = reset($filter);
-            $dependencyTree = $this->buildDependenciesTree($this->metadata, [], $data->attributesEntries);
-            $this->repo = new $data->repo($this->db_conf, $data->class, $data->table, $data->attributesEntries, $dependencyTree);
-            '
+$this->metadata = json_decode(file_get_contents("metadata.json"));
+$filter = array_filter($this->metadata, function ($obj) use ($className) {
+    return $obj->class == $className;
+});
+$data = reset($filter);
+$dependencyTree = $this->buildDependenciesTree($this->metadata, [], $data->attributesEntries);
+$this->repo = new $data->repo($this->db_conf, $data->class, $data->table, $data->attributesEntries, $dependencyTree);
+        '
         );
 
         $this->generateMethod(
@@ -77,19 +76,19 @@ class DemGenerator
                 "metadata" => self::NON_DEFAULT_VALUE, "dep" => self::NON_DEFAULT_VALUE, "rootAttributeEntries" => self::NON_DEFAULT_VALUE
             ),
             'if (count($rootAttributeEntries) != 0) {
-            foreach ($rootAttributeEntries as $singleEntry) {
-                if ($singleEntry->isMapped == true) {
-                    $depClassName = "Entity\\" . $singleEntry->type;
-                    $depMetaDataFiltred = array_filter($metadata, function ($obj) use ($depClassName) {
-                        return $obj->class == $depClassName;
-                        });
-                        $depMetaData = reset($depMetaDataFiltred);
-                        array_push($dep, array($depMetaData, $this->buildDependenciesTree($metadata, [], $depMetaData->attributesEntries)));
-                    }
-                }
-            }
-            return $dep;
-            '
+    foreach ($rootAttributeEntries as $singleEntry) {
+        if ($singleEntry->isMapped == true) {
+            $depClassName = "Entity\\\" . $singleEntry->type;
+            $depMetaDataFiltred = array_filter($metadata, function ($obj) use ($depClassName) {
+                return $obj->class == $depClassName;
+            });
+            $depMetaData = reset($depMetaDataFiltred);
+            array_push($dep, array($depMetaData, $this->buildDependenciesTree($metadata, [], $depMetaData->attributesEntries)));
+        }
+    }
+}
+return $dep;
+        '
         );
 
         $this->generateMethod(
@@ -104,17 +103,16 @@ class DemGenerator
                 "className" => ""
             ),
             'if ($className != "") {
-                $filter = array_filter($this->metadata, function ($obj) use ($className) {
-                    return $obj->class == $className;
-                });
-                $data = reset($filter);
-                $dependencyTree = $this->buildDependenciesTree($this->metadata, [], $data->attributesEntries);
-                return new $data->repo($this->db_conf, $data->class, $data->table, $data->attributesEntries, $dependencyTree);
-            }
-            return $this->repo;    
-            '
+    $filter = array_filter($this->metadata, function ($obj) use ($className) {
+        return $obj->class == $className;
+    });
+    $data = reset($filter);
+    $dependencyTree = $this->buildDependenciesTree($this->metadata, [], $data->attributesEntries);
+    return new $data->repo($this->db_conf, $data->class, $data->table, $data->attributesEntries, $dependencyTree);
+}
+return $this->repo;    
+        '
         );
-
         return $class;
     }
 
@@ -137,9 +135,9 @@ class DemGenerator
                 "db_conf" => self::NON_DEFAULT_VALUE
             ),
             'if (!isset(self::$sharedInstance)) {
-                self::$sharedInstance = new DatabaseManager($db_conf);
-            }
-            return self::$sharedInstance;
+    self::$sharedInstance = new DatabaseManager($db_conf);
+}
+return self::$sharedInstance;
             '
         );
 
@@ -153,12 +151,12 @@ class DemGenerator
                 "db_conf" => self::NON_DEFAULT_VALUE
             ),
             'define("VS_DB_HOST", $db_conf->host);
-            define("VS_DB_PORT", $db_conf->port);
-            define("VS_DB_NAME", $db_conf->name);
-            define("VS_DB_USER", $db_conf->user);
-            define("VS_DB_PWD", $db_conf->password);
-            $this->pdo = new \PDO(\'mysql:host=\' . VS_DB_HOST . \';dbname=\' . VS_DB_NAME . \';dbport=\' . VS_DB_PORT, VS_DB_USER, VS_DB_PWD);
-            $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+define("VS_DB_PORT", $db_conf->port);
+define("VS_DB_NAME", $db_conf->name);
+define("VS_DB_USER", $db_conf->user);
+define("VS_DB_PWD", $db_conf->password);
+$this->pdo = new \PDO(\'mysql:host=\' . VS_DB_HOST . \';dbname=\' . VS_DB_NAME . \';dbport=\' . VS_DB_PORT, VS_DB_USER, VS_DB_PWD);
+$this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             '
         );
 
@@ -174,8 +172,8 @@ class DemGenerator
                 "query" => self::NON_DEFAULT_VALUE, "params" => []
             ),
             '$statement = $this->pdo->prepare($query);
-            $statement->execute($params);
-            return $statement->fetchAll(\PDO::FETCH_ASSOC);
+$statement->execute($params);
+return $statement->fetchAll(\PDO::FETCH_ASSOC);
             '
         );
 
@@ -191,15 +189,15 @@ class DemGenerator
                 "query" => self::NON_DEFAULT_VALUE, "params" => []
             ),
             '$statement = $this->pdo->prepare($sql);
-            $result =  $statement->execute($params);
-            return $result;    
+$result =  $statement->execute($params);
+return $result;    
             '
         );
 
         return $class;
     }
 
-    public function generateRepo($repoClasses = [])
+    public function generateRepo()
     {
         $class = new ClassType('Repo');
 
@@ -220,10 +218,10 @@ class DemGenerator
                 "db_conf" => self::NON_DEFAULT_VALUE, "className" => self::NON_DEFAULT_VALUE, "tableName" => self::NON_DEFAULT_VALUE, "attributesMetaData" => self::NON_DEFAULT_VALUE, "dependenciesTree" => self::NON_DEFAULT_VALUE
             ),
             '$this->dbManager = DatabaseManager::getSharedInstance($db_conf);
-            $this->className = $className;
-            $this->tableName = $tableName;
-            $this->attributesMetaData = $attributesMetaData;
-            $this->dependenciesTree = $dependenciesTree;
+$this->className = $className;
+$this->tableName = $tableName;
+$this->attributesMetaData = $attributesMetaData;
+$this->dependenciesTree = $dependenciesTree;
             '
         );
 
@@ -237,24 +235,24 @@ class DemGenerator
                 "entry" => self::NON_DEFAULT_VALUE
             ),
             '$instance = new $this->className();
-            $treeIndex = 0;
-            foreach ($entry as $key => $value) {
-                $filterdMetaData = array_filter($this->attributesMetaData, function ($obj) use ($key) {
-                    return $obj->mappedName == $key;
-                });
-                if (reset($filterdMetaData)->isMapped == false) {
-                    $setter = reset($filterdMetaData)->setter;
-                    $instance->$setter($value);
-                } else {
-                    $setter = reset($filterdMetaData)->setter;
-                    $dependencyMetaData = $this->dependenciesTree[$treeIndex][0];
-                    $dependencyRepo = new Repo($this->dbManager, $dependencyMetaData->class, $dependencyMetaData->table, $dependencyMetaData->attributesEntries, $this->dependenciesTree[$treeIndex][1]); //fix this
-                    $results = $dependencyRepo->getBy(array(\' id \' => $value));
-                    $instance->$setter(reset($results));
-                    $treeIndex++;
-                }
-            }
-            return $instance;    
+$treeIndex = 0;
+foreach ($entry as $key => $value) {
+    $filterdMetaData = array_filter($this->attributesMetaData, function ($obj) use ($key) {
+        return $obj->mappedName == $key;
+    });
+    if (reset($filterdMetaData)->isMapped == false) {
+        $setter = reset($filterdMetaData)->setter;
+        $instance->$setter($value);
+    } else {
+        $setter = reset($filterdMetaData)->setter;
+        $dependencyMetaData = $this->dependenciesTree[$treeIndex][0];
+        $dependencyRepo = new Repo($this->dbManager, $dependencyMetaData->class, $dependencyMetaData->table, $dependencyMetaData->attributesEntries, $this->dependenciesTree[$treeIndex][1]); //fix this
+        $results = $dependencyRepo->getBy(array(\' id \' => $value));
+        $instance->$setter(reset($results));
+        $treeIndex++;
+    }
+}
+return $instance;    
             '
         );
 
@@ -268,11 +266,11 @@ class DemGenerator
             ),
             [],
             '$query = $this::SELECT_ALL . $this->tableName;
-            $results = [];
-            foreach ($this->dbManager->getAll($query) as $entry) {
-                array_push($results, $this->prepareObject($entry));
-            }
-            return $results;
+$results = [];
+foreach ($this->dbManager->getAll($query) as $entry) {
+    array_push($results, $this->prepareObject($entry));
+}
+return $results;
             '
         );
 
@@ -288,25 +286,25 @@ class DemGenerator
                 "options" => self::NON_DEFAULT_VALUE, "mode" => "AND"
             ),
             '$query = $this::SELECT_ALL . $this->tableName . " WHERE ";
-            $optionsLength = count($options);
-            $i = 0;
-            foreach (array_keys($options) as $key) {
-                $filterdMetaData = array_filter($this->attributesMetaData, function ($obj) use ($key) {
-                    return $obj->name == $key;
-                });
-                if (reset($filterdMetaData)->isMapped == true)
-                    $options[$key] = $options[$key]->getId();
-                $result = reset($filterdMetaData)->mappedName;
-                if (++$i != $optionsLength)
-                    $query .= $result . " = ? " . $mode . " ";
-                else
-                    $query .= $result . " = ? ";
-            }
-            $results = [];
-            foreach ($this->dbManager->getAll($query, array_values($options)) as $entry) {
-                array_push($results, $this->prepareObject($entry));
-            }
-            return $results;
+$optionsLength = count($options);
+$i = 0;
+foreach (array_keys($options) as $key) {
+    $filterdMetaData = array_filter($this->attributesMetaData, function ($obj) use ($key) {
+        return $obj->name == $key;
+    });
+    if (reset($filterdMetaData)->isMapped == true)
+        $options[$key] = $options[$key]->getId();
+    $result = reset($filterdMetaData)->mappedName;
+    if (++$i != $optionsLength)
+        $query .= $result . " = ? " . $mode . " ";
+    else
+        $query .= $result . " = ? ";
+}
+$results = [];
+foreach ($this->dbManager->getAll($query, array_values($options)) as $entry) {
+    array_push($results, $this->prepareObject($entry));
+}
+return $results;
             '
         );
 
@@ -321,82 +319,81 @@ class DemGenerator
             array(
                 "object" => self::NON_DEFAULT_VALUE
             ),
-            '        $params = [];
-            $query = "";
-    
-            $filterdMetaData = array_filter($this->attributesMetaData, function ($obj) {
-                return $obj->name == "id";
-            });
-            $getterId = reset($filterdMetaData)->getter;
-            $setterId = reset($filterdMetaData)->setter;
-            if (count($this->getBy(array("id" => $object->$getterId()))) == 0) {
-                $query = "INSERT INTO " . $this->tableName . " (";
-                $metaDataLength =  count($this->attributesMetaData);
-                $i = 0;
-                foreach ($this->attributesMetaData as $metaDataEntry) {
-                    if (++$i !=  $metaDataLength)
-                        $query .= $metaDataEntry->mappedName . ",";
-                    else
-                        $query .= $metaDataEntry->mappedName . ")";
-                }
-                $query .= " VALUES (";
-                $i = 0;
-                foreach ($this->attributesMetaData as $metaDataEntry) {
-                    if (++$i !=  $metaDataLength)
-                        $query .= "?" . ",";
-                    else
-                        $query .= "?" . ")";
-                }
-    
-                foreach ($this->attributesMetaData as $metaDataEntry) { //add condition if he is mapped put id instead
-                    $getter = $metaDataEntry->getter;
-                    if ($metaDataEntry->isMapped == true)
-                        array_push($params, ($object->$getter()===null) ? null : $object->$getter()->getId());
-                    else
-                        array_push($params, $object->$getter());
-                }
-                $status = $this->dbManager->exec($query, $params);
-                if ($status === true) {
-                    $result = $this->dbManager->get("SELECT LAST_INSERT_ID()");
-                    $newId = $result[\'LAST_INSERT_ID()\'];
-                    $object->$setterId($newId);
-                    return $object;
-                } else
-                    return null;
-            } else {
-                $query = "UPDATE " . $this->tableName . " SET ";
-                $metaDataLength =  count($this->attributesMetaData);
-                $i = 0;
-                foreach ($this->attributesMetaData as $metaDataEntry) {
-                    if ($metaDataEntry->mappedName == "id") {
-                        $i++;
-                        continue;
-                    }
-                    if (++$i !=  $metaDataLength)
-                        $query .= $metaDataEntry->mappedName . "=?,";
-                    else
-                        $query .= $metaDataEntry->mappedName . "=? ";
-                }
-                $query .= " WHERE id=?";
-    
-                $params = [];
-                foreach ($this->attributesMetaData as $metaDataEntry) {
-                    if ($metaDataEntry->mappedName == "id")
-                        continue;
-                    else {
-                        $getter = $metaDataEntry->getter;
-                        if ($metaDataEntry->isMapped == true)
-                            array_push($params, $object->$getter()->getId());
-                        else
-                            array_push($params, $object->$getter());
-                    }
-                }
-                $parsedObject =  array_values($this->getBy(array("id" => $object->$getterId())))[0];
-                $id = $parsedObject->getId();
-                array_push($params, $id);
-                return ($this->dbManager->exec($query, $params) == true) ? $object : null;
-            }    
-            '
+            '$params = [];
+$query = "";
+$filterdMetaData = array_filter($this->attributesMetaData, function ($obj) {
+    return $obj->name == "id";
+});
+$getterId = reset($filterdMetaData)->getter;
+$setterId = reset($filterdMetaData)->setter;
+if (count($this->getBy(array("id" => $object->$getterId()))) == 0) {
+    $query = "INSERT INTO " . $this->tableName . " (";
+    $metaDataLength =  count($this->attributesMetaData);
+    $i = 0;
+    foreach ($this->attributesMetaData as $metaDataEntry) {
+        if (++$i !=  $metaDataLength)
+            $query .= $metaDataEntry->mappedName . ",";
+        else
+            $query .= $metaDataEntry->mappedName . ")";
+    }
+    $query .= " VALUES (";
+    $i = 0;
+    foreach ($this->attributesMetaData as $metaDataEntry) {
+        if (++$i !=  $metaDataLength)
+            $query .= "?" . ",";
+        else
+            $query .= "?" . ")";
+    }
+
+    foreach ($this->attributesMetaData as $metaDataEntry) { //add condition if he is mapped put id instead
+        $getter = $metaDataEntry->getter;
+        if ($metaDataEntry->isMapped == true)
+            array_push($params, ($object->$getter()===null) ? null : $object->$getter()->getId());
+        else
+            array_push($params, $object->$getter());
+    }
+    $status = $this->dbManager->exec($query, $params);
+    if ($status === true) {
+        $result = $this->dbManager->get("SELECT LAST_INSERT_ID()");
+        $newId = $result[\'LAST_INSERT_ID()\'];
+        $object->$setterId($newId);
+        return $object;
+    } else
+        return null;
+} else {
+    $query = "UPDATE " . $this->tableName . " SET ";
+    $metaDataLength =  count($this->attributesMetaData);
+    $i = 0;
+    foreach ($this->attributesMetaData as $metaDataEntry) {
+        if ($metaDataEntry->mappedName == "id") {
+            $i++;
+            continue;
+        }
+        if (++$i !=  $metaDataLength)
+            $query .= $metaDataEntry->mappedName . "=?,";
+        else
+            $query .= $metaDataEntry->mappedName . "=? ";
+    }
+    $query .= " WHERE id=?";
+
+    $params = [];
+    foreach ($this->attributesMetaData as $metaDataEntry) {
+        if ($metaDataEntry->mappedName == "id")
+            continue;
+        else {
+            $getter = $metaDataEntry->getter;
+            if ($metaDataEntry->isMapped == true)
+                array_push($params, $object->$getter()->getId());
+            else
+                array_push($params, $object->$getter());
+        }
+    }
+    $parsedObject =  array_values($this->getBy(array("id" => $object->$getterId())))[0];
+    $id = $parsedObject->getId();
+    array_push($params, $id);
+    return ($this->dbManager->exec($query, $params) == true) ? $object : null;
+}    
+        '
         );
 
         $this->generateMethod(
@@ -409,13 +406,13 @@ class DemGenerator
                 'object' => self::NON_DEFAULT_VALUE
             ),
             '$params = [];
-            $query = "DELETE FROM " . $this->tableName . " WHERE id=?";
-            $filterdMetaData = array_filter($this->attributesMetaData, function ($obj) {
-                return $obj->name == "id";
-            });
-            $getterId = reset($filterdMetaData)->getter;
-            array_push($params, $object->$getterId());
-            return $this->dbManager->exec($query, $params);    
+$query = "DELETE FROM " . $this->tableName . " WHERE id=?";
+$filterdMetaData = array_filter($this->attributesMetaData, function ($obj) {
+    return $obj->name == "id";
+});
+$getterId = reset($filterdMetaData)->getter;
+array_push($params, $object->$getterId());
+return $this->dbManager->exec($query, $params);    
             '
         );
 

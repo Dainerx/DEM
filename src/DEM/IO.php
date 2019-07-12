@@ -6,10 +6,10 @@ class IO
 {
     const VERSION = "0.0.1";
     //output constants
-    const OUTPUT_RUNNING = "Running DEM " . VERSION . " from " . __DIR__ . " ...";
-    const OUTPUT_PROJECT_CONFIG_START = "Generating project metadata...\nEnities path: " . PATH_ENTITY . "\nRepositories path: " . PATH_REPO;
+    const OUTPUT_RUNNING = "Running DEM " . self::VERSION . " from " . __DIR__ . " ...";
+    const OUTPUT_PROJECT_CONFIG_START = "Generating project metadata...";
     const OUTPUT_PROJECT_CONFIG_FAILED = "Project metadata generation has failed:";
-    const OUTPUT_PROJECT_CONFIG_END = "Project metadata generation has been successfully completed.\nMetadata parsed in " . METADATA_FILE;
+    const OUTPUT_PROJECT_CONFIG_END = "Project metadata generation has been successfully completed.\nMetadata parsed in ";
     const OUTPUT_CLASS_CONFIG_START = "Started generating metadata for ";
     const OUTPUT_CLASS_CONFIG_FAILED = "Generating metadata has failed for ";
     const OUTPUT_OK = "OK.";
