@@ -38,15 +38,4 @@ class DemMatcherTest extends TestCase
         $dem = new Dem("a", "b");
         $this->assertEquals("id", $dem->matchProvider($dem::PATTERN_ATTRIBUTE_NAME, "@DEM_name   =    id"));
     }
-
-
-    /*
-    public function testDataBaseReading()
-    {
-        error_reporting(E_ERROR | E_PARSE);
-        //$dem = new Dem("a", "b");
-        //$dbExpected = array("host" => "localhost", "port" => "3306", "name" => "test", "user" => "root", "password" => "root");
-        //$this->assertEquals($dbExpected, $dem->readDataBaseConfig());
-    }
-    */
 }
